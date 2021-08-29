@@ -1,0 +1,26 @@
+version: "3"
+services:
+  meamenu-db:
+    image: mongo:4.2.2
+    environment:
+      MONGO_INITDB_DATABASE: meamenu
+    ports:
+      - 27017:27017
+  meamenu-frontend:
+    image: meamenu-frontend
+    build:
+      context: ./meamenu-frontend
+      dockerfile: Dockerfile
+    environment:
+      PROXY_API: /ws/
+    ports:
+      - 4200:80
+    depends_on:
+      - meamenu-backend
+  meamenu-backend:
+    image: meamenu-backend
+    build:
+      context: ./meamenu-backend
+      dockerfile: Dockerfile
+    environment:
+      MONGODB_URI: mongodb://meamenu-db:27017/meamenu
